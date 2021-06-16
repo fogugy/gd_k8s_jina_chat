@@ -78,7 +78,7 @@ function jinaMessage(question) {
 
     $.ajax({
         type: "POST",
-        url: window.location.href + '/search',
+        url: window.location.href + 'search',
         data: JSON.stringify({"data": [question], "top_k": 3}),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
