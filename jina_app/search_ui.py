@@ -15,7 +15,7 @@ def search():
 
         url_html_path = 'file://' + os.path.abspath(
             os.path.join(
-                os.path.dirname(os.path.realpath(__file__)), '../flask_app/static/index.html'
+                os.path.dirname(os.path.realpath(__file__)), '../flask_app/templates/index.html'
             )
         )
         try:
