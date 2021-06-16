@@ -41,27 +41,23 @@ def hello_world(args):
     }
 
     # download the data
-    download_data(targets, args.download_proxy, task_name='download csv data')
+    # download_data(targets, args.download_proxy, task_name='download csv data')
 
     # now comes the real work
     # load index flow from a YAML file
 
-    f = (
-        Flow()
-        .add(uses=MyTransformer, parallel=args.parallel)
-        .add(uses=MyIndexer, workspace=args.workdir)
-    )
+    f = Flow.load_config('flow.yml')
 
     # index it!
     with f, open(targets['covid-csv']['filename']) as fp:
-        f.index(from_csv(fp, field_resolver={'question': 'text'}))
+        # f.index(from_csv(fp, field_resolver={'question': 'text'}))
 
         # switch to REST gateway at runtime
         f.use_rest_gateway(args.port_expose)
 
         url_html_path = 'file://' + os.path.abspath(
             os.path.join(
-                os.path.dirname(os.path.realpath(__file__)), 'static/index.html'
+                os.path.dirname(os.path.realpath(__file__)), '../flask_app/static/index.html'
             )
         )
         try:
@@ -104,4 +100,6 @@ def download_data(targets, download_proxy=None, task_name='download fashion-mnis
 
 if __name__ == '__main__':
     args = set_hw_chatbot_parser().parse_args()
+    args.workdir = os.environ['HW_WORKDIR']
+
     hello_world(args)

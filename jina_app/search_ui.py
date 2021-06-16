@@ -1,18 +1,23 @@
 import os
+
 import webbrowser
 
 from jina import Flow
+from jina.parsers.helloworld import set_hw_chatbot_parser
 from jina.logging.predefined import default_logger
-from jina.parsers.helloworld import set_hw_multimodal_parser
 
 
-def search_ui(args):
-    f = Flow.load_config('flow-search.yml')
+def search():
+    f = Flow.load_config('flow.yml')
 
-    url_html_path = 'file://' + os.path.abspath(
-        os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/index.html')
-    )
     with f:
+        f.use_rest_gateway(args.port_expose)
+
+        url_html_path = 'file://' + os.path.abspath(
+            os.path.join(
+                os.path.dirname(os.path.realpath(__file__)), '../flask_app/static/index.html'
+            )
+        )
         try:
             webbrowser.open(url_html_path, new=2)
         except:
@@ -22,12 +27,11 @@ def search_ui(args):
                 f'You should see a demo page opened in your browser, '
                 f'if not, you may open {url_html_path} manually'
             )
+
         if not args.unblock_query_flow:
             f.block()
 
 
 if __name__ == '__main__':
-    args = set_hw_multimodal_parser().parse_args()
-    args.workdir = os.environ['HW_WORKDIR']
-
-    search_ui(args)
+    args = set_hw_chatbot_parser().parse_args()
+    search()

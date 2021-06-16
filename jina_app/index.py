@@ -1,19 +1,27 @@
 import os
 
 from jina import Flow
+from jina.parsers.helloworld import set_hw_chatbot_parser
 from jina.types.document.generators import from_csv
-from jina.parsers.helloworld import set_hw_multimodal_parser
+from my_executors import MyTransformer, MyIndexer
 
 
 def index(args):
-    f = Flow.load_config('flow-index.yml')
+    targets = {
+        'covid-csv': {
+            'url': args.index_data_url,
+            'filename': os.path.join(args.workdir, 'dataset.csv'),
+        }
+    }
 
-    with f, open(f'{args.workdir}/people-img/meta.csv', newline='') as fp:
-        f.index(inputs=from_csv(fp), request_size=10)
+    f = Flow.load_config('flow.yml')
+
+    with f, open(targets['covid-csv']['filename']) as fp:
+        f.index(from_csv(fp, field_resolver={'question': 'text'}))
 
 
 if __name__ == '__main__':
-    args = set_hw_multimodal_parser().parse_args()
+    args = set_hw_chatbot_parser().parse_args()
     args.workdir = os.environ['HW_WORKDIR']
 
     index(args)

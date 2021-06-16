@@ -1,41 +1,33 @@
 import os
 import urllib.request
-import zipfile
 from pathlib import Path
 
 from jina.importer import ImportExtensions
 from jina.logging.profile import ProgressBar
-from jina.parsers.helloworld import set_hw_multimodal_parser
+from jina.parsers.helloworld import set_hw_chatbot_parser
 
 
 def prep(args):
+    Path(args.workdir).mkdir(parents=True, exist_ok=True)
+
     with ImportExtensions(
             required=True,
             help_text='this demo requires Pytorch and Transformers to be installed, '
                       'if you haven\'t, please do `pip install jina[torch,transformers]`',
     ):
-        import transformers, torch, torchvision
+        import transformers, torch
 
-        assert [
-            torch,
-            transformers,
-            torchvision,
-        ]  #: prevent pycharm auto remove the above line
-
-    Path(args.workdir).mkdir(parents=True, exist_ok=True)
+        assert [torch, transformers]  #: prevent pycharm auto remove the above line
 
     targets = {
-        'people-img': {
+        'covid-csv': {
             'url': args.index_data_url,
-            'filename': os.path.join(args.workdir, 'dataset.zip'),
+            'filename': os.path.join(args.workdir, 'dataset.csv'),
         }
     }
 
-    if not os.path.exists(targets['people-img']['filename']):
-        download_data(targets, args.download_proxy, task_name='download zip data')
-
-    with zipfile.ZipFile(targets['people-img']['filename'], 'r') as fp:
-        fp.extractall(args.workdir)
+    # download the data
+    download_data(targets, args.download_proxy, task_name='download csv data')
 
 
 def download_data(targets, download_proxy=None, task_name='download fashion-mnist'):
@@ -63,7 +55,7 @@ def download_data(targets, download_proxy=None, task_name='download fashion-mnis
 
 
 if __name__ == '__main__':
-    args = set_hw_multimodal_parser().parse_args()
+    args = set_hw_chatbot_parser().parse_args()
     args.workdir = os.environ['HW_WORKDIR']
 
     prep(args)

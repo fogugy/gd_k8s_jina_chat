@@ -69,12 +69,14 @@ spec:
           env:
             - name: JINA_PORT
               value: "6000"
+            - name: HW_WORKDIR
+              value: "workdir"
           ports:
             - containerPort: 6000
           volumeMounts:
             - mountPath: /app
               name: volume-jina
-          command: ['python', 'app.py', 'search']
+          command: ['python', 'search.py']
           resources:
             requests:
               memory: "1024Mi"

@@ -10,6 +10,10 @@ executors:
   - name: myTransformer
     uses:
       jtype: MyTransformer
+    with:
+      parallel: 1
   - name: myIndexer
     uses:
       jtype: MyIndexer
+    with:
+      workdir: $HW_WORKDIR
