@@ -76,19 +76,19 @@ spec:
               - echo "success"
           initialDelaySeconds: 30
           periodSeconds: 30
-        - name: flask
-          #          stdin: true
-          #          tty: true
-          image: flask-app:latest
-          imagePullPolicy: Never
-          ports:
-            - containerPort: 5000
-          env:
-            - name: SERVICE_PORT
-              value: "5000"
-            - name: JINA_PORT
-              value: "49000"
-          volumeMounts:
-            - mountPath: /app
-              name: volume-flask
-          command: [ 'python', 'myapp.py' ]
+      - name: flask
+        #          stdin: true
+        #          tty: true
+        image: flask-app:latest
+        imagePullPolicy: Never
+        ports:
+          - containerPort: 5000
+        env:
+          - name: SERVICE_PORT
+            value: "5000"
+          - name: JINA_PORT
+            value: "49000"
+        volumeMounts:
+          - mountPath: /app
+            name: volume-flask
+        command: [ 'python', 'myapp.py' ]
