@@ -76,9 +76,11 @@ function jinaMessage(question) {
     $('<div class="message loading new"><figure class="avatar"><img src="https://api.jina.ai/logo/logo-product/jina-core/logo-only/colored/Product%20logo_Core_Colorful%402x.png" /></figure><span></span></div>').appendTo($('.mCSB_container'));
     updateScrollbar();
 
+    var reqHost = window.location.href
+
     $.ajax({
         type: "POST",
-        url: window.location.href + 'search',
+        url: reqHost + 'search',
         data: JSON.stringify({"data": [question], "top_k": 3}),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
@@ -96,7 +98,7 @@ function jinaMessage(question) {
         updateScrollbar();
     }).fail(function () {
         setTimeout(function () {
-            fakeMessage("Connection failed, did you run <pre>jina hello chatbot</pre> on local? Is your address <pre>" + $('#jina-server-addr').val() + "</pre> ?");
+            fakeMessage("Connection failed, did you run <pre>jina hello chatbot</pre> on local? Is your address <pre>" + reqHost + "</pre> ?");
         }, 100);
     });
 }

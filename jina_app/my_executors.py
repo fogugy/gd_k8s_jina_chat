@@ -89,7 +89,7 @@ class MyIndexer(Executor):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self._docs = DocumentArrayMemmap(self.workspace + f'/Index')
+        self._docs = DocumentArray()
 
     @requests(on='/index')
     def index(self, docs: 'DocumentArray', **kwargs):

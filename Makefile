@@ -12,6 +12,6 @@ run-kube:
 	kubectl apply -f deployment.yaml
 
 minikube-run:
-	minikube start --vm-driver=hyperkit &&\
+	minikube start --vm-driver=hyperkit --memory 5000 &&\
 	minikube mount ./:/workdir
 

@@ -42,6 +42,8 @@ spec:
 
       containers:
         - name: flask
+#          stdin: true
+#          tty: true
           image: flask-app:latest
           imagePullPolicy: Never
           ports:
@@ -55,15 +57,17 @@ spec:
             - mountPath: /app
               name: volume-flask
           command: ['python', 'app.py']
-          resources:
-            requests:
-              memory: "64Mi"
-              cpu: "50m"
-            limits:
-              memory: "128Mi"
-              cpu: "100m"
+#          resources:
+#            requests:
+#              memory: "64Mi"
+#              cpu: "50m"
+#            limits:
+#              memory: "128Mi"
+#              cpu: "100m"
 
         - name: jina
+#          stdin: true
+#          tty: true
           image: jina-app:latest
           imagePullPolicy: Never
           env:
@@ -76,9 +80,9 @@ spec:
           volumeMounts:
             - mountPath: /app
               name: volume-jina
-          command: ['python', 'search.py']
-          resources:
-            requests:
-              memory: "1024Mi"
-            limits:
-              memory: "2500Mi"
+          command: ['python', 'serve.py']
+#          resources:
+#            requests:
+#              memory: "1024Mi"
+#            limits:
+#              memory: "2500Mi"

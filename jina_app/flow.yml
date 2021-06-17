@@ -3,7 +3,7 @@ version: '1'
 with:
   workspace: $HW_WORKDIR
   port_expose: $JINA_PORT
-  rest_api: true
+  restful: True
   py_modules:
     - my_executors.py
 executors:

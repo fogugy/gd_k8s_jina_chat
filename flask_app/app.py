@@ -1,7 +1,9 @@
 import os
+import requests
+import json
+
 from flask import Flask, Response, jsonify, request
 from flask import render_template
-import requests
 
 PORT = os.environ['SERVICE_PORT']
 JINA_PORT = os.environ['JINA_PORT']
@@ -32,7 +34,7 @@ def hello():
 
 @app.route('/search', methods=['POST'])
 def search():
-    r_jina = requests.post(f'http://0.0.0.0:{JINA_PORT}/search', request.data)
+    r_jina = requests.post(f'http://0.0.0.0:{JINA_PORT}/search', json=json.loads(request.data))
     r = Response(
         r_jina.text,
         status=r_jina.status_code,
@@ -45,22 +47,6 @@ def search():
 @app.route('/ping', methods=['GET'])
 def ping():
     return Response('pong\n', status=200)
-
-
-@app.route('/ping_jina', methods=['POST'])
-def ping_jina():
-    r_jina = requests.get(f'http://0.0.0.0:{JINA_PORT}/search')
-    r = Response(
-        r_jina.text,
-        status=r_jina.status_code,
-        content_type=r_jina.headers['content-type']
-    )
-    return r
-
-
-@app.route('/test_jina_search', methods=['POST'])
-def test_jina_search():
-    pass
 
 
 if __name__ == '__main__':
