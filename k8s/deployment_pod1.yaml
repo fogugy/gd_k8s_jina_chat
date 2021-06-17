@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jina-pod1-deployment
+  labels:
+    app: jina-pod1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jina-pod1
+  template:
+    metadata:
+      labels:
+        app: jina-pod1
+    spec:
+      volumes:
+        - name: volume
+          hostPath:
+            path: /workdir/executors
+            type: Directory
+
+      containers:
+      - name: pod1
+        image: jina-app
+        imagePullPolicy: Never
+        env:
+          - name: PORT_IN
+            valueFrom:
+              configMapKeyRef:
+                name: jina-flow-configmap
+                key: pod1-port-in
+          - name: PORT_OUT
+            valueFrom:
+              configMapKeyRef:
+                name: jina-flow-configmap
+                key: pod1-port-out
+          - name: PORT_CTRL
+            valueFrom:
+              configMapKeyRef:
+                name: jina-flow-configmap
+                key: pod1-port-ctrl
+          - name: HOST_IN
+            valueFrom:
+              configMapKeyRef:
+                name: jina-flow-configmap
+                key: pod0-host-name
+          - name: HOST_OUT
+            valueFrom:
+              configMapKeyRef:
+                name: jina-flow-configmap
+                key: gateway-host-name
+
+        volumeMounts:
+          - mountPath: /executors
+            name: volume
+
+        command: ["jina", "pod"]
+        args: ["--uses", "/executors/indexer.yaml", "--port-in", "$(PORT_IN)", "--port-out", "$(PORT_OUT)", "--port-ctrl", "$(PORT_CTRL)", "--host-out", "$(HOST_OUT)", "--socket-in", "PULL_BIND", "--socket-out", "PUSH_CONNECT"]
+#        args: ["--uses", "/executors/test_executor.yaml", "--port-in", "$(PORT_IN)", "--port-out", "$(PORT_OUT)", "--port-ctrl", "$(PORT_CTRL)", "--host-out", "$(HOST_OUT)", "--socket-in", "PULL_BIND", "--socket-out", "PUSH_CONNECT"]
+        livenessProbe:
+          exec:
+            command:
+              - /bin/sh
+              - -c
+              - jina ping 0.0.0.0 $PORT_CTRL
+          initialDelaySeconds: 30
+          periodSeconds: 30 
+          timeoutSeconds: 30
+        readinessProbe:
+          exec:
+            command:
+              - /bin/sh
+              - -c
+              - jina ping 0.0.0.0 $PORT_CTRL
+          initialDelaySeconds: 30
+          periodSeconds: 30 
+          timeoutSeconds: 30

@@ -5,8 +5,12 @@ import json
 from flask import Flask, Response, jsonify, request
 from flask import render_template
 
+from jina import Client, Document
+from jina.types.document.generators import from_csv
+
 PORT = os.environ['SERVICE_PORT']
-JINA_PORT = os.environ['JINA_PORT']
+JINA_HOST = os.environ['JINA_HOST']
+JINA_PORT = int(os.environ['JINA_PORT'])
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'the quick brown fox jumps over the lazy   dog'
@@ -32,9 +36,17 @@ def hello():
                            payload=payload)
 
 
+@app.route('/init_index', methods=['POST'])
+def init_index():
+    with open('./data/dataset.csv') as fp:
+        c = Client(host=JINA_HOST, port_expose=JINA_PORT, restful=True)
+        return c.post('/index', from_csv(fp, field_resolver={'question': 'text'}))
+
+
 @app.route('/search', methods=['POST'])
 def search():
-    r_jina = requests.post(f'http://0.0.0.0:{JINA_PORT}/search', json=json.loads(request.data))
+    r_jina = requests.post(f'http://{JINA_HOST}:{JINA_PORT}/search', json=json.loads(request.data))
+
     r = Response(
         r_jina.text,
         status=r_jina.status_code,

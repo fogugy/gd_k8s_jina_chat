@@ -1,2 +1,4 @@
 Flask==1.1.2
 requests==2.25.1
+jina==2.0.0rc7.dev35
+websockets==9.1

@@ -1,0 +1,8 @@
+jtype: MyIndexer
+metas:
+  py_modules:
+    - /executors/executors.py
+  name: myIndexer
+requests:
+  /index: index
+  /search: search

@@ -1,0 +1,8 @@
+jtype: MyTestExecutor
+metas:
+  py_modules:
+    - /executors/test_executor.py
+  name: MyTestExecutor
+requests:
+  /index: invoke
+  /search: invoke

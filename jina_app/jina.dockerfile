@@ -1,8 +1,6 @@
 FROM python:3.8.8-slim-buster
 
-WORKDIR /app
-
-COPY ./requirements.txt /app/
+COPY ./requirements.txt /
 
 RUN apt-get update && apt-get install curl -y
 

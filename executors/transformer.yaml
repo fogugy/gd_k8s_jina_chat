@@ -1,0 +1,8 @@
+jtype: MyTransformer
+metas:
+  py_modules:
+    - /executors/executors.py
+  name: myTransformer
+requests:
+  /index: encode
+  /search: encode
