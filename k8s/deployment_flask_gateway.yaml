@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-jina-gateway-deployment
+  labels:
+    app: flask-jina-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flask-jina-gateway
+  template:
+    metadata:
+      labels:
+        app: flask-jina-gateway
+    spec:
+      volumes:
+        - name: volume-flask
+          hostPath:
+            path: /workdir/flask_app
+            type: Directory
+        - name: volume-jina
+          hostPath:
+            path: /workdir/jina_app
+            type: Directory
+      containers:
+      - name: gateway
+        image: jinaai/jina:latest
+        imagePullPolicy: Always
+        env:
+          - name: PORT_IN
+            valueFrom:
+              configMapKeyRef:
+                name: jina-flow-configmap
+                key: gateway-port-in
+          - name: PORT_OUT
+            valueFrom:
+              configMapKeyRef:
+                name: jina-flow-configmap
+                key: gateway-port-out
+          - name: PORT_CTRL
+            valueFrom:
+              configMapKeyRef:
+                name: jina-flow-configmap
+                key: gateway-port-ctrl
+          - name: PORT_EXPOSE
+            valueFrom:
+              configMapKeyRef:
+                name: jina-flow-configmap
+                key: gateway-port-expose
+          - name: HOST_IN
+            valueFrom:
+              configMapKeyRef:
+                name: jina-flow-configmap
+                key: pod1-host-name
+          - name: HOST_OUT
+            valueFrom:
+              configMapKeyRef:
+                name: jina-flow-configmap
+                key: pod0-host-name
+        command: ["jina", "gateway"]
+        args: ["--port-in", "$(PORT_IN)", "--port-out", "$(PORT_OUT)", "--port-ctrl", "$(PORT_CTRL)", "--host-out", "$(HOST_OUT)", "--port-expose", "$(PORT_EXPOSE)", "--socket-in", "PULL_BIND"]
+        livenessProbe:
+          exec:
+            command:
+              - /bin/sh
+              - -c
+              - echo "success"
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        readinessProbe:
+          exec:
+            command:
+              - /bin/sh
+              - -c
+              - echo "success"
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        - name: flask
+          #          stdin: true
+          #          tty: true
+          image: flask-app:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 5000
+          env:
+            - name: SERVICE_PORT
+              value: "5000"
+            - name: JINA_PORT
+              value: "49000"
+          volumeMounts:
+            - mountPath: /app
+              name: volume-flask
+          command: [ 'python', 'myapp.py' ]

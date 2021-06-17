@@ -1,0 +1,8 @@
+jtype: MyRemoteExecutor
+metas:
+  py_modules:
+    - /executor/executor.py
+  name: awesomeness
+  description: my first awesome executor
+requests:
+  /index: qux
