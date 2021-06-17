@@ -21,7 +21,7 @@ services:
       SERVICE_PORT: 5000
       JINA_PORT: 6000
     working_dir: /app
-    command: python app.py
+    command: python myapp.py
 
   jina:
     image: jina-app

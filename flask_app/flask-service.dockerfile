@@ -7,4 +7,7 @@ COPY ./requirements.txt /app/
 RUN apt-get update && apt-get install curl -y
 
 RUN pip install --no-cache-dir --upgrade pip &&\
-    pip install --no-cache-dir --trusted-host pypi.python.org -r requirements.txt
+    pip install --no-cache-dir --trusted-host pypi.python.org -r requirements.txt &&\
+    pip install --pre jina &&\
+    pip install jina[websockets]
+

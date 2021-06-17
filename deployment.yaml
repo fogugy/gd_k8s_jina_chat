@@ -7,7 +7,8 @@ spec:
   selector:
     app: jina
   ports:
-    - protocol: "TCP"
+    - name: serv
+      protocol: TCP
       port: 5000
       targetPort: 5000
   type: LoadBalancer
@@ -56,7 +57,7 @@ spec:
           volumeMounts:
             - mountPath: /app
               name: volume-flask
-          command: ['python', 'app.py']
+          command: ['python', 'myapp.py']
 #          resources:
 #            requests:
 #              memory: "64Mi"

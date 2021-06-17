@@ -56,6 +56,7 @@ class MyTransformer(Executor):
 
     @requests
     def encode(self, docs: 'DocumentArray', *args, **kwargs):
+        print(docs)
         import torch
 
         with torch.no_grad():
