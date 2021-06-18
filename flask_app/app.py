@@ -40,7 +40,9 @@ def hello():
 def init_index():
     with open('./data/dataset.csv') as fp:
         c = Client(host=JINA_HOST, port_expose=JINA_PORT, restful=True)
-        return c.post('/index', from_csv(fp, field_resolver={'question': 'text'}))
+        r = c.post('/index', from_csv(fp, field_resolver={'question': 'text'}))
+
+        return Response('Work in progress, see logs\n', status=200)
 
 
 @app.route('/search', methods=['POST'])
